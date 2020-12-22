@@ -1,0 +1,482 @@
+<head>
+    <!-- 山体滑坡动态演示 -->
+    <title></title>
+    <!-- <div id='webgl-output'>红色:x 轴 绿色:y轴 蓝色:z轴</div> -->
+    <style>
+
+    </style>
+</head>
+<script>
+    function init() {
+        //week 
+        this.head;
+
+        function Node(node) {
+            this.element = node;
+            this.next = null;
+        };
+
+        // 找到指定元素
+        function findNode(node) {
+            if (this.head.next == null) {
+                return;
+            }
+            let newHead = this.head;
+            while (newHead.element != node) {
+                newHead = newHead.next;
+
+            }
+            return newHead.element;
+        }
+        // 找到指定元素的前一个元素
+        function findFrontNode(node) {
+            if (this.head.next == null) {
+                return;
+            }
+            if (this.head.element == node) {
+                return this.head.element
+            }
+            let newHead = this.head;
+            while (newHead.next.element != node) {
+                newHead = newHead.next;
+
+            }
+            return newHead.element;
+        }
+        // 找到指定元素的后一个元素
+        function findBehindNode(node) {
+            if (this.head.next == null) {
+                return;
+            }
+            if (this.head.element == node) {
+                return this.head.element
+            }
+            let newHead = this.head;
+            while (newHead.next.element != node) {
+                newHead = newHead.next;
+
+            }
+            return newHead.next.next;
+        }
+        //删除
+        function deleteNode(node) {
+            if (this.head.next == null) {
+                return;
+            }
+            if (this.head.element == node) {
+                return null;
+            }
+            let find1 = findFrontNode(node) //找到上一个
+            let newHead = this.head;
+
+            while (newHead.element != find1) {
+                newHead = newHead.next;
+            }
+            newHead.next = newHead.next.next;
+
+        }
+        // 尾插
+        function insertTailNode(node, headNode) {
+            let newNode = new Node(node)
+            let newHead = headNode
+            while (newHead.next != null) {
+                newHead = newHead.next
+            }
+            newHead.next = newNode
+            return newHead
+        }
+        // 头插
+        function insertHeadNode(node) {
+            let newNode = new Node(node)
+            newNode.next = this.head
+            this.head = newNode
+            return newNode
+        }
+
+        //在指定位置之前插入
+        function insetPositionFront(node, newNode) {
+            let new1 = new Node(newNode);
+            let find = findFrontNode(node);
+
+            let newHead = this.head;
+            while (newHead.element != find) {
+                newHead = newHead.next
+            }
+
+            new1.next = newHead.next;
+            newHead.next = new1;
+        }
+        //在指定位置后边插入
+        function insetPositionBehind(node, newNode) {
+            let new1 = new Node(newNode);
+            let find = findNode(node)
+            let newHead = this.head;
+            while (newHead.element != find) {
+                newHead = newHead.next
+            }
+            new1.next = newHead.next.next
+            newHead.next = new1
+        }
+        //翻转单链表
+        function revertList() {
+            if (this.head.next == null) {
+                return;
+            }
+            var newList = new Node(-1);
+            var prev;
+            var pCur;
+            let newHead = this.head; //this.head就是头结点
+            newList.next = newHead;
+            while (newHead.next != null) {
+                pCur = newHead.next;
+                prev = newHead;
+                prev.next = pCur.next;
+                pCur.next = newList.next
+                newList.next = pCur;
+                newHead = prev
+            }
+            return newList.next
+        }
+
+        //输出链表中的element
+
+        function printElement() {
+            if (this.head.next == null) {
+                return this.head.element
+            }
+            var arr = []
+            var newHead = this.head;
+            while (newHead.next != null) {
+                arr.push(newHead.element)
+                newHead = newHead.next
+            }
+
+        }
+        //从尾到头输出链表值
+        function printTailToHead() {
+            if (this.head.next == null) {
+                return this.head.element
+            }
+            var arr = []
+            var newHead = this.head;
+            while (newHead.next != null) {
+                arr.unshift(newHead.element)
+                newHead = newHead.next
+            }
+        }
+        // 输入两个递增排序的链表，
+        // 合并这两个链表并使新链表中的节点仍然是递增排序的——《剑指offer》题25
+        // 这里还要再看看！！！！！！！！！！！！！！！
+        // ！！！！！！！！！！！！！！！！！！！！！！！
+        function mergeLink() {
+            if (!this.head_1) {
+                return this.head_2;
+            }
+            if (!this.head_2) {
+                return this.head_1;
+            }
+            let newNode = new Node('merge')
+            let head = newNode; //保存头节点 
+
+            //0.1.3.8.9
+            var curNodeFir = this.head_1;
+            //2,4,7
+            var curNodeSec = this.head_2;
+            while (curNodeFir && curNodeSec) {
+                if (Number(curNodeFir.element) > Number(curNodeSec.element)) {
+                    newNode.next = curNodeSec; //通过这里来修改下一个是什么
+                    curNodeSec = curNodeSec.next;
+                } else {
+
+                    newNode.next = curNodeFir; //通过这里来修改下一个是什么
+                    curNodeFir = curNodeFir.next;
+                }
+                newNode = newNode.next
+            }
+
+            if (!curNodeFir) {
+                newNode.next = curNodeSec;
+            }
+            if (!curNodeSec) {
+                newNode.next = curNodeFir;
+            }
+            return newNode.next;
+
+        }
+        // 输入一个链表，输出该链表中倒数第k个节点
+        function whichNodeFun(index) {
+            var head = this.head
+            var head_1 = this.head
+            if (head.next == null) {
+                return head
+            }
+            var k = index
+            var count = 0;
+            var count_1 = 0;
+            while (head != null) {
+                count += 1;
+                head = head.next
+            }
+            //倒数第2个就是正数的第3个
+            var surPlus = count - index;
+            while (head_1 != null) {
+                if (count_1 == surPlus) {
+                    return head_1
+                }
+                count_1 += 1;
+                head_1 = head_1.next
+            }
+        }
+        //给定单向链表的头指针和一个要删除的节点的值，
+        //定义一个函数删除该节点。
+        // 返回删除后的链表的头节点
+
+        function deleteConsitionNode(node) {
+            let head = this.head
+            if (head.next == null) {
+                return head;
+
+            }
+            if (head.element == node) { //如果开头第一个就是要删除的节点
+                head = head.next
+                return head;
+            }
+            let newHead = this.head
+            while (newHead.next != null) {
+                if (newHead.next.element == node) {
+                    debugger
+                    if (newHead.next.next == null) {
+                        newHead.next = null
+                    } else {
+                        newHead.next = newHead.next.next
+                    }
+                    return head
+                    break;
+                } else {
+                    newHead = newHead.next
+                }
+            }
+        }
+        //删除表中重复的节点
+        //移除未排序链表中的重复节点。保留最开始出现的节点 。
+        //思路：用了2个指针 firstNode secondNode 
+        //然后当遇到相同的值时，再将该节点删除
+        function deleteRepeat() {
+            let firstNode = this.head;
+            if (firstNode.next == null) {
+                return firstNode
+            }
+            while (firstNode.next != null) {
+                let secondNode = firstNode;
+                while (secondNode.next != null) {
+                    if (firstNode.element == secondNode.next.element) {
+                        secondNode.next = secondNode.next.next
+                        firstNode.next = secondNode
+                    }
+                    secondNode = secondNode.next
+                }
+                firstNode = firstNode.next
+            }
+            return this.head
+        }
+
+        // 复杂链表的复制
+
+        //输入一个复杂链表（每个节点中有节点值，以及两个指针，
+        //一个指向下一个节点， 另一个特殊指针指向任意一个节点），
+        //返回结果为复制后复杂链表的head —《剑指offer》题35
+        //题解：就是为了新的复制后的与旧的不共享内存，修改之后不互相影响
+        //思路：
+
+        //第一次循环复制每个节点和next指针，并保存为原节点-复制节点的映射关系
+        //第二次循环，通过哈希表获得节点对应的复制节点，更新random指针
+        //通过map,创造key-value形式
+        function complexNode(val, next, random) {
+            this.val = val;
+            this.next = next;
+        };
+
+        function complexLink() {
+            var map = new Map();
+            var cur = this.head_3;
+            while (cur) {
+                let newNode = new complexNode(cur.val)
+                map.set(cur, newNode)
+                cur = cur.next
+            }
+
+            curr = this.head_3;
+
+            while (curr) {
+                var newNode = map.get(curr);
+                var next = map.get(curr.next);
+                var random = map.get(curr.random);
+                if (next) {
+                    newNode.next = next
+                }
+                if (random) {
+                    newNode.random = random
+                }
+                curr = curr.next
+            }
+            this.head_3 = map.get(this.head_3)
+
+            return this.head_3;
+        }
+
+        //输入两个链表，找出它们的第一个公共节点—
+
+        // 思路：
+        // 先找到两个链表的长度len1，len2
+        // 让长一点的链表先走len2-len1步，使得两个链表距离链表尾部的长度相同；
+        // 两个链表一起走，并比较节点是否相同，相同即为公共节点，判断是否相同是需要值相同，并下一个节点也相同
+        //容易想错的地方:判断是否相同是需要值相同，并下一个节点也相同  相同则长度与数值都相同
+        // 力扣的讲解
+        // https://leetcode-cn.com/problems/liang-ge-lian-biao-de-di-yi-ge-gong-gong-jie-dian-lcof/solution/liang-ge-lian-biao-de-di-yi-ge-gong-gong-jie-di-30/
+        function findCommonNode() {
+            //0,1,2,3,4,7,8,8,9,9
+            var curNodeFir = this.head_1;
+            //2,3,4,7,8,8,9,9
+            var curNodeSec = this.head_2;
+            var pointFir;
+            var pointSec
+            var count_1 = 0;
+            var count_2 = 0;
+            //计算两个链表的长度
+            while (curNodeFir) {
+                count_1 += 1;
+                curNodeFir = curNodeFir.next
+            }
+            while (curNodeSec) {
+                count_2 += 1;
+                curNodeSec = curNodeSec.next
+            }
+            var curNodeFir = this.head_1;
+            var curNodeSec = this.head_2;
+            //判断长度,设定pointFir指向长的,pointSec指向短的
+            if (count_1 > count_2) {
+                pointFir = curNodeFir;
+                pointSec = curNodeSec;
+            } else {
+                pointFir = curNodeSec;
+                pointSec = curNodeFir;
+            }
+            //pointFir指向长的
+            var surplus = Math.abs(count_2 - count_1);
+            var index = 0;
+            while (pointFir) {
+                if (index == surplus) {
+                    break
+                }
+                pointFir = pointFir.next
+                index += 1;
+            }
+            var common = new Node('find');
+            while (pointFir != null) {
+                if (pointFir == pointSec) { //直接对比剩下的链表是否相同,不用再去循环了
+                    common = pointFir;
+
+                    return common;
+                }
+                pointFir = pointFir.next;
+                pointSec = pointSec.next;
+            }
+            return null
+        }
+
+
+
+        // 如何判断单链表是否存在环
+        function isHaveRing() {
+
+        }
+
+        // 给定一个链表，若其中包含环，请找出该链表的环的入口节点，否则输出null— 
+
+
+
+
+
+
+        // 一个字符串，sjdjskajxhsoieiwyqjxnxiwoajzabc，找出连续最长的
+
+
+
+
+
+        this.head = new Node("a0");
+        //尾插法
+        insertTailNode('a1', this.head);
+        insertTailNode('a2', this.head);
+        insertTailNode('a3', this.head);
+        insertTailNode('a2', this.head);
+        insertTailNode('a4', this.head);
+        //头插法
+        // insertHeadNode('a0');
+        this.head_1 = new Node("0");
+        //尾插法
+        insertTailNode('1', this.head_1);
+        insertTailNode('3', this.head_1);
+        insertTailNode('7', this.head_1);
+        insertTailNode('9', this.head_1);
+        this.head_2 = new Node("2");
+        //尾插法
+        insertTailNode('4', this.head_2);
+        insertTailNode('7', this.head_2);
+        insertTailNode('8', this.head_2);
+        insertTailNode('9', this.head_2);
+        //找公共节点
+        let findCommon = findCommonNode();
+        //查找节点
+        // let find = findNode('a2')
+        //删除节点
+        // deleteNode('a2'); 
+        //插入到指定位置后边
+        // insetPositionBehind('a1', 'a5');
+        //插入到指定位置前边
+        // insetPositionFront('a1', 'a3');
+        //翻转单链表
+        // let list = revertList();
+        //输出链表每一个元素
+        let arrList = printElement();
+        //从尾到头输出
+        let arrTailToHeadList = printTailToHead();
+        // 合并递增链表
+        let mergeNewHead = mergeLink();
+        // 输入一个链表，输出该链表中倒数第k个节点
+        let whichNode = whichNodeFun(2);
+        //删除指定位置节点 并返回
+        // let deletePosNode = deleteConsitionNode("a3");
+        //删除重复节点
+        let deleteRepeatNode = deleteRepeat()
+            //复杂链表的复制
+            //创建复杂链表
+        this.head_3 = new complexNode("b0", null);
+        let a1 = new complexNode("b1", null);
+        let a2 = new complexNode("b2", null);
+        let a3 = new complexNode("b3", null);
+        this.head_3.next = a1;
+        a1.next = a2;
+        a2.next = a3;
+        this.head_3.random = null;
+        a1.random = a3
+        a2.random = a1;
+        a1.random = this.head_3
+
+        this.head_4 = new complexNode("c0", null);
+        // 复杂链表的复制
+        let complexRepeatNode = complexLink();
+
+        //有环单链表创建
+        this.head_5 = new Node("c0");
+        insertTailNode('c1', this.head_5);
+        insertTailNode('c2', this.head_5);
+        insertTailNode('c3', this.head_5);
+        // while () {
+
+        // }
+
+        debugger
+    }
+    window.onload = init;
+</script>
