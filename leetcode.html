@@ -1,0 +1,97 @@
+<html>
+
+<head>
+    <title>刷题</title>
+
+</head>
+
+<body>
+
+</body>
+<script>
+    //     一题：
+    //     给你一个整数数组 nums 和一个正整数 k，请你判断是否可以把这个数组划分成一些由 k 个连续数字组成的集合。
+    // 如果可以，请返回 True；否则，返回 False。
+
+    // 示例 1：
+
+    // 输入：nums = [1,2,3,3,4,4,5,6], k = 4
+    // 输出：true
+    // 解释：数组可以分成 [1,2,3,4] 和 [3,4,5,6]。 
+    function testMap() {
+        var nums = [1, 2, 3, 3, 4, 4, 5, 6]
+        k = 4;
+        if (nums.length <= 0 || nums.length < k || nums.length % k != 0) {
+            return false;
+        }
+        //先排序
+        nums = nums.sort((a, b) => a - b)
+            //这个快排写法 如果数据量非常大，会报堆栈溢出 ，需要优化
+            // var datafun = function(data) {
+            //     if (data.length <= 1) {
+            //         return data;
+            //     }
+            //     var middleIndex = Math.floor(data.length / 2);
+            //     var middle = data.splice(middleIndex, 1)[0];
+            //     var left = [];
+            //     var right = [];
+
+        //     for (var i = 0; i < data.length; i++) {
+        //         if (data[i] < middle) {
+        //             left.push(data[i]);
+        //         } else {
+        //             right.push(data[i]);
+        //         }
+        //     }
+
+        //     return datafun(left).concat([middle], datafun(right));
+        // };
+        // var data = datafun(nums);
+
+
+        var arrMap = new Map()
+
+        for (var i = 0; i < data.length; i++) {
+
+            arrMap.set(data[i], arrMap.get(data[i]) + 1 || 1);
+
+        }
+        //取得第一个最小的数值
+        var min = arrMap.keys().next().value
+        while (min) {
+            min = arrMap.keys().next().value
+                // 找到此次取得数值的次数，是1次的删除，不是1次的 减一
+            if (arrMap.get(min) <= 1) {
+                arrMap.delete(min)
+            } else {
+                arrMap.set(min, arrMap.get(min) - 1)
+            }
+            for (var i = 0; i < k - 1; i++) {
+                //因为是求连续的 所以用min 直接加1 获取下一个数值，没有的话 说明不连续，退出
+                var nextNum = arrMap.get(min + 1)
+                if (nextNum) {
+
+                } else {
+                    //这里的判断， 如果正确结果的话，需要判断里边是否还有剩余的值，
+                    // 有的话则说明里边的数值有不连续的  导致退出
+                    // 没有的话  说明 是正确的连续的
+                    if (arrMap.keys().next().value) {
+                        return false
+                    } else {
+                        return true
+                    }
+                }
+                min = min + 1
+                if (arrMap.get(min) <= 1) {
+                    arrMap.delete(min)
+                } else {
+                    arrMap.set(min, arrMap.get(min) - 1)
+                }
+            }
+        }
+
+    };
+    window.testMap()
+</script>
+
+</html>
